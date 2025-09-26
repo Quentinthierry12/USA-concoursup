@@ -44,6 +44,8 @@ export interface Contest {
   created_by?: string;
   created_at: string;
   updated_at: string;
+  // Lien Académie
+  academy_module_id?: string;
   // Relations
   agency?: Agency;
   creator?: User;
@@ -196,6 +198,7 @@ export interface CreateContestData {
   is_recurring?: boolean;
   recurring_interval?: string;
   agency_id?: string;
+  academy_module_id?: string;
 }
 
 export interface CreateModuleData {

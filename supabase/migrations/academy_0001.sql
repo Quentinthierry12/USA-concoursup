@@ -1,3 +1,8 @@
+-- Lier les concours au module académique d'origine
+ALTER TABLE IF EXISTS concour_contests
+ADD COLUMN IF NOT EXISTS academy_module_id UUID REFERENCES academy_modules(id);
+
+CREATE INDEX IF NOT EXISTS idx_concour_contests_academy_module_id ON concour_contests(academy_module_id);
 -- Extensions utiles (Postgres >= 13)
 create extension if not exists pgcrypto;
 

@@ -77,15 +77,29 @@ export function Header() {
                 >
                   Évaluations
                 </Link>
+                <Link
+                  to="/academy/teacher/contests"
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  Concours
+                </Link>
               </>
             )}
             {(user && user.role === 'candidat' && user.academy_role === 'etudiant') && (
-              <Link
-                to="/academy/student"
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Mon Académie
-              </Link>
+              <>
+                <Link
+                  to="/academy/student"
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  Mon Académie
+                </Link>
+                <Link
+                  to="/academy/student/contests"
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  Mes Concours
+                </Link>
+              </>
             )}
           </nav>
 

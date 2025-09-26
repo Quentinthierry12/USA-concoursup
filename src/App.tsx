@@ -23,8 +23,10 @@ import { AcademyAdminResources } from './pages/academy/admin/AcademyAdminResourc
 import { AcademyAdminEvaluations } from './pages/academy/admin/AcademyAdminEvaluations';
 import { AcademyAdminStudents } from './pages/academy/admin/AcademyAdminStudents';
 import { StudentDashboard } from './pages/academy/student/StudentDashboard';
+import { StudentContests } from './pages/academy/student/StudentContests';
 import { AcademyAdminTeachers } from './pages/academy/admin/AcademyAdminTeachers';
 import { TeacherDashboard } from './pages/academy/teacher/TeacherDashboard';
+import { TeacherContests } from './pages/academy/teacher/TeacherContests';
 
 function App() {
   return (
@@ -152,6 +154,24 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/academy/student/contests" 
+                element={
+                  <ProtectedRoute roles={['candidat']} academyRoles={['etudiant']}>
+                    <StudentContests />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                 path="/academy/teacher/contests" 
+                 element={
+                   <ProtectedRoute
+                     academyRoles={['prof']}
+                   >
+                     <TeacherContests />
+                   </ProtectedRoute>
+                 } 
+               />
               <Route 
                 path="/academy/teacher/evaluations" 
                 element={
