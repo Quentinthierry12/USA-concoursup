@@ -4,8 +4,10 @@ import { Academy, AcademyClass, AcademyModule, AcademyResource } from '../../../
 import { Button } from '../../../components/ui/Button';
 import { Card } from '../../../components/ui/Card';
 import { Input } from '../../../components/ui/Input';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export function AcademyAdminResources() {
+  const { user } = useAuth();
   const [academies, setAcademies] = useState<Academy[]>([]);
   const [classes, setClasses] = useState<AcademyClass[]>([]);
   const [modules, setModules] = useState<AcademyModule[]>([]);
@@ -21,12 +23,31 @@ export function AcademyAdminResources() {
   useEffect(() => { fetchAcademies(); }, []);
   useEffect(() => { fetchClasses(filterAcademyId || undefined); fetchModules(filterAcademyId || undefined); fetchResources(filterAcademyId || undefined); }, [filterAcademyId]);
 
+  // Synchroniser le formulaire avec le filtre académie pour éviter l'oubli de sélection côté formulaire
+  useEffect(() => {
+    if (filterAcademyId && !form.academy_id) {
+      setForm(prev => ({ ...prev, academy_id: filterAcademyId }));
+    }
+  }, [filterAcademyId]);
+
   const submit = async () => {
-    if (!form.title.trim() || !form.url.trim() || !form.academy_id) return;
+    const academyId = form.academy_id || filterAcademyId;
+    if (!form.title.trim() || !form.url.trim() || !academyId) return;
+    const payload = { 
+      academy_id: academyId, 
+      class_id: form.class_id || null, 
+      module_id: form.module_id || null, 
+      title: form.title.trim(), 
+      url: form.url.trim(), 
+      type: form.type, 
+      visibility: form.visibility,
+      created_by: user?.id
+    } as any;
+
     if (form.id) {
-      await supabase.from('academy_resources').update({ academy_id: form.academy_id, class_id: form.class_id || null, module_id: form.module_id || null, title: form.title, url: form.url, type: form.type, visibility: form.visibility }).eq('id', form.id);
+      await supabase.from('academy_resources').update(payload).eq('id', form.id);
     } else {
-      await supabase.from('academy_resources').insert({ academy_id: form.academy_id, class_id: form.class_id || null, module_id: form.module_id || null, title: form.title, url: form.url, type: form.type, visibility: form.visibility });
+      await supabase.from('academy_resources').insert(payload);
     }
     setForm({ title: '', url: '', type: 'link', visibility: 'academy' });
     await fetchResources(filterAcademyId || undefined);
@@ -46,7 +67,7 @@ export function AcademyAdminResources() {
               {academies.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
             <Input placeholder="Titre" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
-            <Input placeholder="URL" value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} />
+            <Input type="url" placeholder="https://exemple.com/ressource" value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <select className="border rounded px-3 py-2 bg-white dark:bg-gray-800" value={form.academy_id || ''} onChange={e => setForm({ ...form, academy_id: e.target.value })}>
